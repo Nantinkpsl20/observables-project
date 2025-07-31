@@ -1,7 +1,7 @@
 import { NgFor } from '@angular/common';
 import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,6 @@ export class App {
   //create an observable => we call the observable constructor
   //is the event emitter
   myObservable = new Observable((observer) => {
-
     //every second we emit a value
     setTimeout(() => { observer.next(1); }, 1000);
     setTimeout(() => { observer.next(2); }, 2000);
@@ -33,8 +32,29 @@ export class App {
     setTimeout(() => { observer.complete(); }, 3000);
   });
 
+  //-----------------of operator------------------//
+  oddArray = [1, 3, 5, 7, 9];
+  abcArray = ['A', 'B', 'C', 'D'];
+
+  //create an observable from of operator
+  ofObservable = of(this.oddArray, this.abcArray);
+
+  //-----------------from operator------------------//
+  fromObservable = from('hello');
+
+  
+  //----------convert promise into observable------------//
+
+  //create a promise
+  promiseData = new Promise((resolve, reject)=>{
+     resolve(this.oddArray);//returns these data
+  });
+
+  convObservable = from(this.promiseData);
+
+
   GetAsyncData(){
-    this.myObservable.subscribe({
+    this.convObservable.subscribe({
       //with the arrow function this keyword will point an instance of appComponent
       //in different way it will point an instance of this object that we don't have a 
       //property with name data etc.
