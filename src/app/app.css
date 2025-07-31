@@ -1,0 +1,26 @@
+.container{
+   margin-left: 30%;
+   margin-top: 5%;
+}
+
+.data-list{
+    padding: 10px;
+    background-color: aliceblue;
+    border: solid 1px lightgray;
+    border-radius: 3px;
+    width: 70%;
+    margin-bottom: 2px;
+}
+
+button{
+    background-color: blueviolet;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: azure;
+    color: black;
+}
