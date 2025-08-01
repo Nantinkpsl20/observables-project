@@ -2,12 +2,14 @@ import { NgFor } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, signal, ViewChild, AfterViewInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
-import { from, fromEvent, Observable, of } from 'rxjs';
+import { filter, from, fromEvent, map, Observable, of } from 'rxjs';
+import { NewTask } from './new-task/new-task';
+import { ShowTask } from './show-task/show-task';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor],
+  imports: [RouterOutlet, NgFor, NewTask, ShowTask],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
@@ -52,13 +54,30 @@ export class App implements AfterViewInit{
 
   convObservable = from(this.promiseData);
 
+    //-----------------create observable map operator------------------//
+    //result -> 10, 20, 30, 40, 50, 60 it means every element * 5
+    even = [2, 4, 6, 8, 10, 12];
+    convMapObservable = from(this.even);
+    transformedObs = this.convMapObservable.pipe(map((value)=>{
+        return value * 5;
+    }))
 
-  //------Create observable with fromEvent Operator------//
-  @ViewChild('createBtn') createBtn!: ElementRef; //it stores a button reference of DOM
+    //-----------------create observable filter operator------------------//
+    //based on codition it will return/emit only the numbers that can be divided by 4
+    //20, 40, 60
+    filteredObservable = this.transformedObs.pipe(filter((value) => {
+       return value % 4 === 0; //the condition
+    }))
 
+    //chain from, map & filter operators
+    chainOpObs = from(this.even).pipe(map((value)=>{
+        return value * 5;
+    }), filter((value) => {
+       return value % 4 === 0; //the condition
+    }));
 
   GetAsyncData(){
-    this.convObservable.subscribe({
+    this.chainOpObs.subscribe({
       //with the arrow function this keyword will point an instance of appComponent
       //in different way it will point an instance of this object that we don't have a 
       //property with name data etc.
@@ -75,6 +94,8 @@ export class App implements AfterViewInit{
     })
   }
 
+   //------Create observable with fromEvent Operator------//
+  @ViewChild('createBtn') createBtn!: ElementRef; //it stores a button reference of DOM
   destroyRef = inject(DestroyRef);
   items: string[] = [];
   
@@ -92,7 +113,6 @@ export class App implements AfterViewInit{
   ngAfterViewInit(){
        this.buttonClicked();
   }
-
 
   showItem(count: number){
     this.items.push("Item" + " " + count);
