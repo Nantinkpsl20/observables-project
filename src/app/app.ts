@@ -1,7 +1,8 @@
 import { NgFor } from '@angular/common';
-import { ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, signal, ViewChild, AfterViewInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
-import { from, Observable, of } from 'rxjs';
+import { from, fromEvent, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { from, Observable, of } from 'rxjs';
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
-export class App {
+export class App implements AfterViewInit{
   protected readonly title = signal('observables-project');
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -42,7 +43,6 @@ export class App {
   //-----------------from operator------------------//
   fromObservable = from('hello');
 
-  
   //----------convert promise into observable------------//
 
   //create a promise
@@ -51,6 +51,10 @@ export class App {
   });
 
   convObservable = from(this.promiseData);
+
+
+  //------Create observable with fromEvent Operator------//
+  @ViewChild('createBtn') createBtn!: ElementRef; //it stores a button reference of DOM
 
 
   GetAsyncData(){
@@ -69,6 +73,30 @@ export class App {
          alert('All the data are streamed!');
       }
     })
+  }
+
+  destroyRef = inject(DestroyRef);
+  items: string[] = [];
+  
+  buttonClicked(){
+    let count = 0;
+    const fromEvObservable = fromEvent(this.createBtn.nativeElement, 'click')
+                           .pipe(takeUntilDestroyed(this.destroyRef))
+                           .subscribe((data)=>{
+                             console.log(data);
+                               this.showItem(++count);
+                           });
+  }
+
+  //it is a hook that will call the above function when the element is fully initialised
+  ngAfterViewInit(){
+       this.buttonClicked();
+  }
+
+
+  showItem(count: number){
+    this.items.push("Item" + " " + count);
+    this.cdr.detectChanges(); //inform Angular for changes
   }
 
 }

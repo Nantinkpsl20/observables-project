@@ -1,5 +1,14 @@
 <div class="container">
   <h2>{{pageTitle}}</h2>
-  <div class="data-list" *ngFor="let x of data">{{x}}</div>
-  <button (click)="GetAsyncData()">Get data</button>
+<!--   <div class="data-list" *ngFor="let x of data">{{x}}</div>
+  <button (click)="GetAsyncData()">Get data</button> -->
+ 
+ <!-- @for way ----//
+  @for(item of items; track item){
+    <div class="data-list" >{{item}}</div>
+ } -->
+
+ <div class="data-list" *ngFor="let item of items">{{item}}</div>
+ <button #createBtn >Create Item</button> 
+
 </div>
