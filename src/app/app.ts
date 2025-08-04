@@ -5,11 +5,13 @@ import { RouterOutlet } from '@angular/router';
 import { filter, from, fromEvent, map, Observable, of } from 'rxjs';
 import { NewTask } from './new-task/new-task';
 import { ShowTask } from './show-task/show-task';
+import { SubjectComponent } from './subject/subject';
+import { Unsubscribe } from './unsubscribe/unsubscribe';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor, NewTask, ShowTask],
+  imports: [RouterOutlet, NgFor, NewTask, ShowTask, SubjectComponent, Unsubscribe],
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
@@ -105,7 +107,7 @@ export class App implements AfterViewInit{
                            .pipe(takeUntilDestroyed(this.destroyRef))
                            .subscribe((data)=>{
                              console.log(data);
-                               this.showItem(++count);
+                             this.showItem(++count);
                            });
   }
 

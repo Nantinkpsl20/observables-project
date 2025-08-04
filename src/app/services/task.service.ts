@@ -8,6 +8,6 @@ export class TaskService{
    CreateTask = new Subject<string>();
    
    onCreateTask(value: string){
-      this.CreateTask.next(value);//emit the value through event emitter to inform all subscibers
+      this.CreateTask.next(value);//emit the value through subject to inform all subscibers
    }
 }
